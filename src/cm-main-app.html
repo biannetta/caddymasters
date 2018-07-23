@@ -17,18 +17,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="my-icons.html">
 
-<link rel="lazy-import" href="my-view1.html">
-<link rel="lazy-import" href="my-view2.html">
-<link rel="lazy-import" href="my-view3.html">
-<link rel="lazy-import" href="my-view404.html">
+<link rel="lazy-import" href="cm-tournaments.html">
+<link rel="lazy-import" href="cm-settings.html">
+<link rel="lazy-import" href="cm-view3.html">
+<link rel="lazy-import" href="cm-view404.html">
 <link rel="lazy-import" href="shared-styles.html">
 
-<dom-module id="caddy-masters">
+<dom-module id="cm-main-app">
   <template>
     <style include="shared-styles">
       :host {
@@ -90,9 +91,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="[[rootPath]]view1">Tournaments</a>
-          <a name="view2" href="[[rootPath]]view2">Settings</a>
-          <a name="view3" href="[[rootPath]]view3">Logout</a>
+          <a name="tournaments" href="[[rootPath]]tournaments"><iron-icon icon="icons:home"></iron-icon> Tournaments</a>
+          <a name="settings" href="[[rootPath]]settings"><iron-icon icon="icons:account-box"></iron-icon> Settings</a>
         </iron-selector>
       </app-drawer>
 
@@ -103,6 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>[[page]]</div>
+            <paper-icon-button icon="icons:exit-to-app"></paper-icon-button>
           </app-toolbar>
         </app-header>
 
@@ -111,10 +112,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
-          <my-view404 name="view404"></my-view404>
+          <cm-tournaments name="tournaments"></cm-tournaments>
+          <cm-settings name="settings"></cm-settings>
+          <cm-view404 name="view404"></cm-view404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -126,7 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer.setPassiveTouchGestures(true);
 
     class CaddyMasters extends Polymer.Element {
-      static get is() { return 'caddy-masters'; }
+      static get is() { return 'cm-main-app'; }
 
       static get properties() {
         return {
@@ -152,7 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page) {
         // If no page was found in the route data, page will be an empty string.
         // Default to 'view1' in that case.
-        this.page = page || 'view1';
+        this.page = page || 'tournaments';
 
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
@@ -162,7 +162,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
-        const resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        const resolvedPageUrl = this.resolveUrl('cm-' + page + '.html');
+        console.log(resolvedPageUrl);
         Polymer.importHref(
             resolvedPageUrl,
             null,
