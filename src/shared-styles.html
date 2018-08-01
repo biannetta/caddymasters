@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
 
 <!-- shared styles for all views -->
 <dom-module id="shared-styles">
@@ -17,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         --app-primary-color: #b8e986;
         --app-secondary-color: #417505;
-        --app-offset-color: ##81A25F;
+        --app-offset-color: #81A25F;
       }
 
       .card {
@@ -46,6 +47,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #212121;
         font-size: 22px;
       }
-    </style>
+
+      .action-bar {
+        align-items: center; 
+        background-color: var(--app-secondary-color);
+        border-radius: 0px;
+        color: whitesmoke;
+        display: flex;
+        height: 60px;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .offset {
+        background-color: var(--app-offset-color);
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+     </style>
   </template>
 </dom-module>

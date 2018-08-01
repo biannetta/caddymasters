@@ -89,7 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-drawer-layout fullbleed narrow="{{narrow}}">
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Menu</app-toolbar>
+        <app-toolbar>Caddy Masters</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="tournaments" href="[[rootPath]]tournaments"><iron-icon icon="icons:home"></iron-icon> Tournaments</a>
           <a name="settings" href="[[rootPath]]settings"><iron-icon icon="icons:account-box"></iron-icon> Settings</a>
@@ -121,8 +121,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    // Gesture events like tap and track generated from touch will not be
-    // preventable, allowing for better scrolling performance.
     Polymer.setPassiveTouchGestures(true);
 
     class CaddyMasters extends Polymer.Element {
@@ -137,8 +135,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           routeData: Object,
           subroute: Object,
-          // This shouldn't be neccessary, but the Analyzer isn't picking up
-          // Polymer.Element#rootPath
           rootPath: String,
         };
       }
@@ -151,7 +147,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _routePageChanged(page) {
         // If no page was found in the route data, page will be an empty string.
-        // Default to 'view1' in that case.
         this.page = page || 'tournaments';
 
         // Close a non-persistent drawer when the page & route are changed.
@@ -163,12 +158,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         const resolvedPageUrl = this.resolveUrl('cm-' + page + '.html');
-        console.log(resolvedPageUrl);
-        Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+        Polymer.importHref(resolvedPageUrl,null,this._showPage404.bind(this),true);
       }
 
       _showPage404() {
