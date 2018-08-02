@@ -1,7 +1,7 @@
 {
-  "name": "My App",
-  "short_name": "My App",
-  "description": "My App description",
+  "name": "Caddy Masters",
+  "short_name": "Caddy Masters",
+  "description": "Schedule Your Caddy Today",
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",
@@ -16,6 +16,6 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#3f51b5",
-  "background_color": "#3f51b5"
+  "theme_color": "#b8e986",
+  "background_color": "#b8e986"
 }

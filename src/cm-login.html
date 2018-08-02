@@ -16,18 +16,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="shared-styles.html">
 
-<link rel="import" href="cm-main-app.html">
-<link rel="import" href="cm-registration.html">
-
 <dom-module id="cm-login">
   <template>
     <style include="shared-styles">
      .view-login {
         align-items: center;
+        background-color: var(--app-primary-color);
         display: flex;
         flex-direction: column;
         height: 100vh;
-        justify-content: space-between;
+        justify-content: flex-end;
       }
       .logo {
         fill: var(--app-secondary-color);
@@ -47,16 +45,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
-    <firebase-app
-      api-key="AIzaSyAgQuur6jRvfs_kU1K5cz2MW1GzkEqsYPo"
-      database-url="https://caddymasters-68a40.firebaseio.com"
-      auth-domain="caddymasters-68a40.firebaseapp.com"
-      storage-bucket="caddymasters-68a40.appspot.com">
-    </firebase-app>
-    
     <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
-    <div class="view-login" id="signIn" hidden>
+    <div class="view-login">
       <svg class="logo" aria-hidden="true" data-prefix="fas" data-icon="golf-ball" class="svg-inline--fa fa-golf-ball fa-w-13" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 416 512">
         <path d="M96 416h224c0 17.7-14.3 32-32 32h-16c-17.7 0-32 14.3-32 32v20c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-20c0-17.7-14.3-32-32-32h-16c-17.7 0-32-14.3-32-32zm320-208c0 74.2-39 139.2-97.5 176h-221C39 347.2 0 282.2 0 208 0 93.1 93.1 0 208 0s208 93.1 208 208zm-180.1 43.9c18.3 0 33.1-14.8 33.1-33.1 0-14.4-9.3-26.3-22.1-30.9 9.6 26.8-15.6 51.3-41.9 41.9 4.6 12.8 16.5 22.1 30.9 22.1zm49.1 46.9c0-14.4-9.3-26.3-22.1-30.9 9.6 26.8-15.6 51.3-41.9 41.9 4.6 12.8 16.5 22.1 30.9 22.1 18.3 0 33.1-14.9 33.1-33.1zm64-64c0-14.4-9.3-26.3-22.1-30.9 9.6 26.8-15.6 51.3-41.9 41.9 4.6 12.8 16.5 22.1 30.9 22.1 18.3 0 33.1-14.9 33.1-33.1z"></path>
       </svg>
@@ -70,10 +61,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-form>
       </div>
       <paper-button on-tap="_login" class="action-bar">Login</paper-button>
-      <paper-button on-tap="switchView" data-page="register" class="action-bar offset">Register</paper-button>
+      <a href='/register' class="action-bar offset"><paper-button>Register</paper-button></a>
     </div>
-    <cm-registration id="register"></cm-registration>
-    <cm-main-app id="mainApp" hidden></cm-main-app>
   </template>
 
   <script>
@@ -90,20 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _login() {
         this.$.auth.signInWithEmailAndPassword(this.username,this.password)
-          .then(function(response){console.log(response)})
           .catch(function(error){console.log(error)});
-      }
-
-      ready() {
-        super.ready();
-        this.$.auth.auth.onAuthStateChanged(function(user){
-          if (!user) {
-            console.log(user);
-          } else {
-            this.$.signIn.hidden = false;
-            this.$.mainApp.hidden = true;
-          }
-        });
       }
     }
 

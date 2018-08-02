@@ -1,0 +1,123 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="my-icons.html">
+
+<link rel="lazy-import" href="cm-login.html">
+<link rel="lazy-import" href="cm-register.html">
+<link rel="lazy-import" href="cm-home.html">
+<link rel="lazy-import" href="shared-styles.html">
+
+<dom-module id="cm-app">
+  <template>
+    <style include="shared-styles">
+      :host {
+        --app-primary-color: #81A25F;
+        --app-secondary-color: #b8e986;
+        --app-offset-color: #81A25F;
+        display: block;
+      }
+    </style>
+
+    <firebase-app
+      api-key="AIzaSyAgQuur6jRvfs_kU1K5cz2MW1GzkEqsYPo"
+      database-url="https://caddymasters-68a40.firebaseio.com"
+      auth-domain="caddymasters-68a40.firebaseapp.com"
+      storage-bucket="caddymasters-68a40.appspot.com">
+    </firebase-app>
+    
+    <firebase-auth id="auth" user="{{user}}"></firebase-auth>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+    <iron-pages
+        selected="[[page]]"
+        attr-for-selected="name"
+        fallback-selection="login"
+        role="main">
+      <cm-login name="login" id="login"></cm-login>
+      <cm-register name="register" id="register"></cm-register>
+      <cm-home name="home" route="[[subroute]]" id="home"></cm-home>
+
+    </iron-pages>
+  </template>
+
+  <script>
+    Polymer.setPassiveTouchGestures(true);
+
+    class MyApp extends Polymer.Element {
+      static get is() { return 'cm-app'; }
+
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          route: Object,
+          routeData: Object,
+          subroute: Object,
+          rootPath: String,
+          user: Object
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+        ];
+      }
+
+      _routePageChanged(page) {
+        // If no page was found in the route data, page will be an empty string.
+        this.page = page || 'home';
+     }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        const resolvedPageUrl = this.resolveUrl('cm-' + page + '.html');
+        Polymer.importHref(resolvedPageUrl,null,this._showPage404.bind(this),true);
+      }
+
+      _showPage404() {
+        this.page = 'view404';
+      }
+      
+      ready() {
+        super.ready();
+        this.$.auth.auth.onAuthStateChanged(function(user){
+          if (!user) {
+            this.page = 'login';
+          } else {
+            this.page = 'home';
+          }
+        }.bind(this));
+      }
+    }
+
+    window.customElements.define(MyApp.is, MyApp);
+  </script>
+</dom-module>

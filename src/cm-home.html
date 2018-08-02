@@ -21,15 +21,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="lazy-import" href="cm-tournaments.html">
 <link rel="lazy-import" href="cm-settings.html">
-<link rel="lazy-import" href="cm-view3.html">
 <link rel="lazy-import" href="cm-view404.html">
 <link rel="lazy-import" href="shared-styles.html">
 
-<dom-module id="cm-main-app">
+<dom-module id="cm-home">
   <template>
     <style include="shared-styles">
       :host {
@@ -43,18 +44,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: none;
       }
 
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-
+      app-header,
       app-toolbar {
-        color: #fff;
         background-color: var(--app-primary-color);
+        color: whitesmoke;
       }
 
       app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
+        --paper-icon-button-ink-color: whitesmoke;
+      }
+
+      .app-title {
+        color: whitesmoke;
+        font-family: 'Playfair Display', serif;
+        font-weight: bold;
+        text-transform: capitalize;
       }
 
       .drawer-list {
@@ -74,39 +78,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location
-        route="{{route}}"
-        url-space-regex="^[[rootPath]]">
-    </app-location>
+    <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
     <app-route
-        route="{{route}}"
-        pattern="[[rootPath]]:page"
+        route="[[route]]"
+        pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}">
     </app-route>
 
-    <app-drawer-layout fullbleed narrow="{{narrow}}">
+    <app-drawer-layout id="main" fullbleed narrow="{{narrow}}">
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Caddy Masters</app-toolbar>
+        <app-toolbar class="app-title">Caddy Masters</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="tournaments" href="[[rootPath]]tournaments"><iron-icon icon="icons:home"></iron-icon> Tournaments</a>
-          <a name="settings" href="[[rootPath]]settings"><iron-icon icon="icons:account-box"></iron-icon> Settings</a>
+          <a name="tournaments" href="[[route.prefix]]/tournaments"><iron-icon icon="icons:home"></iron-icon> Tournaments</a>
+          <a name="settings" href="[[route.prefix]]/settings"><iron-icon icon="icons:account-box"></iron-icon> Settings</a>
         </iron-selector>
       </app-drawer>
 
       <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-
-        <app-header slot="header" condenses reveals effects="waterfall">
+      <app-header-layout>
+        <app-header slot="header" fixed>
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>[[page]]</div>
-            <paper-icon-button icon="icons:exit-to-app"></paper-icon-button>
+            <div main-title class="app-title">[[page]]</div>
+            <paper-icon-button icon="icons:exit-to-app" on-tap="_logout"></paper-icon-button>
           </app-toolbar>
         </app-header>
-
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -124,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer.setPassiveTouchGestures(true);
 
     class CaddyMasters extends Polymer.Element {
-      static get is() { return 'cm-main-app'; }
+      static get is() { return 'cm-home'; }
 
       static get properties() {
         return {
@@ -133,9 +132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
+          route: Object,
           routeData: Object,
           subroute: Object,
-          rootPath: String,
+          user: Object
         };
       }
 
@@ -164,7 +164,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _showPage404() {
         this.page = 'view404';
       }
-    }
+
+      _logout() {
+        this.$.auth.signOut();
+      }
+   }
 
     window.customElements.define(CaddyMasters.is, CaddyMasters);
   </script>

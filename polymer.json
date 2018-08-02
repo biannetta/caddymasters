@@ -1,11 +1,13 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/cm-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/cm-login.html",
+    "src/cm-register.html",
+    "src/cm-home.html",
+    "src/cm-settings.html",
+    "src/cm-tournaments.html",
+    "src/cm-view404.html"
   ],
   "sources": [
     "images/**/*",

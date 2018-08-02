@@ -1,0 +1,122 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="cm-register">
+  <template>
+    <style include="shared-styles">
+      .form-registration {
+        background-color: var(--app-primary-color);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: space-between;
+      }
+      paper-button {
+        margin: 0px;
+      }
+      paper-tabs {
+        background-color: var(--app-secondary-color);
+        color: whitesmoke;
+      }
+      paper-checkbox {
+        margin-top: 10px;
+      }
+      iron-form {
+        margin: 10px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+    </style>
+
+    <firebase-auth id="auth" user="{{user}}"></firebase-auth>
+
+    <div class="form-registration">
+      <div class="form">
+        <paper-tabs selected="{{selected}}">
+          <paper-tab>Player</paper-tab>
+          <paper-tab>Caddy</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+          <iron-form name="player-registration">
+            <form method="get" action="">
+              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
+              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
+              <paper-input label="Email" type="email" name="email" value="{{email}}"></paper-input>
+              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
+              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
+              <paper-input label="Password" type="password" name="address" value="{{password}}"></paper-input>
+            </form>
+          </iron-form>
+          <iron-form name="caddy-registration">
+            <form method="get" action="">
+              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
+              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
+              <paper-input label="Email" type="email" name="email" value="{{email}}"></paper-input>
+              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
+              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
+              <paper-input label="Password" type="password" name="address" value="{{password}}"></paper-input>
+              <paper-checkbox>Have a Carry Bag?</paper-checkbox>
+              <paper-checkbox>Have a Staff Bag?</paper-checkbox>
+            </form>
+          </iron-form>
+        </iron-pages>
+      </div>
+      <div>
+        <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
+        <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    class Registration extends Polymer.Element {
+      static get is() { return 'cm-register'; }
+
+      static get properties() {
+        return {
+          firstname: String,
+          lastname: String,
+          email: String,
+          cell: Number,
+          address: String,
+          password: String,
+          selected: {
+            type: Number,
+            value: 0
+          },
+          user: Object
+        }
+      }
+
+      _registerUser() {
+        if (this.email && this.password) {
+          this.$.auth.createUserWithEmailAndPassword(this.email,this.password)
+            .then(function (response) {console.log(response);})
+            .catch(function(error){console.log(error)});
+        }
+      }
+    }
+
+    window.customElements.define(Registration.is, Registration);
+  </script>
+</dom-module>
