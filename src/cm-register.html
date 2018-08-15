@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="cm-register">
@@ -26,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: flex;
         flex-direction: column;
         height: 100vh;
-        justify-content: space-between;
+        justify-content: flex-end;
       }
       paper-button {
         margin: 0px;
@@ -50,7 +51,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
-    <div class="form-registration">
+    <firebase-query 
+        id="users" 
+        path="/users/[[uid]]"></firebase-query>
+
+    <div id="register" class="form-registration">
       <div class="form">
         <paper-tabs selected="{{selected}}">
           <paper-tab>Player</paper-tab>
@@ -59,22 +64,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="{{selected}}">
           <iron-form name="player-registration">
             <form method="get" action="">
-              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
-              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
-              <paper-input label="Email" type="email" name="email" value="{{email}}"></paper-input>
-              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
-              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
-              <paper-input label="Password" type="password" name="address" value="{{password}}"></paper-input>
+              <paper-input label="First Name" type="text" name="firstname" value="{{newUser.firstname}}"></paper-input>
+              <paper-input label="Last Name" type="text" name="lastname" value="{{newUser.lastname}}"></paper-input>
+              <paper-input label="Cell Phone" type="number" name="cell" value="{{newUser.cell}}"></paper-input>
+              <paper-input label="Address" type="text" name="address" value="{{newUser.address}}"></paper-input>
             </form>
           </iron-form>
           <iron-form name="caddy-registration">
             <form method="get" action="">
-              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
-              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
-              <paper-input label="Email" type="email" name="email" value="{{email}}"></paper-input>
-              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
-              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
-              <paper-input label="Password" type="password" name="address" value="{{password}}"></paper-input>
+              <paper-input label="First Name" type="text" name="firstname" value="{{newUser.firstname}}"></paper-input>
+              <paper-input label="Last Name" type="text" name="lastname" value="{{newUser.lastname}}"></paper-input>
+              <paper-input label="Email" type="email" name="email" value="{{newUser.email}}"></paper-input>
+              <paper-input label="Address" type="text" name="address" value="{{newUser.address}}"></paper-input>
               <paper-checkbox>Have a Carry Bag?</paper-checkbox>
               <paper-checkbox>Have a Staff Bag?</paper-checkbox>
             </form>
@@ -94,26 +95,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          firstname: String,
-          lastname: String,
-          email: String,
-          cell: Number,
-          address: String,
-          password: String,
+          newUser: {
+            type: Object,
+            value: function () {
+              return {
+                firstname: "",
+                lastname: "",
+                cell: undefined,
+                address: "",
+              };
+            }
+          },
           selected: {
             type: Number,
             value: 0
           },
-          user: Object
+          user: Object,
+          uid: String
         }
       }
 
       _registerUser() {
-        if (this.email && this.password) {
-          this.$.auth.createUserWithEmailAndPassword(this.email,this.password)
-            .then(function (response) {console.log(response);})
+        if (this.newUser['email'] && this.newUser['password']) {
+          this.$.auth.createUserWithEmailAndPassword(this.newUser['email'],this.newUser['password'])
             .catch(function(error){console.log(error)});
         }
+      }
+
+      ready() {
+        super.ready();
+        this.$.register.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+        });
       }
     }
 

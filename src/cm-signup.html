@@ -1,0 +1,108 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="cm-signup">
+  <template>
+    <style include="shared-styles">
+      .form-registration {
+        background-color: var(--app-primary-color);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: space-between;
+      }
+      paper-button {
+        margin: 0px;
+      }
+      paper-tabs {
+        background-color: var(--app-secondary-color);
+        color: whitesmoke;
+      }
+      paper-checkbox {
+        margin-top: 10px;
+      }
+      iron-form {
+        margin: 10px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+    </style>
+
+    <firebase-auth id="auth" user="{{user}}"></firebase-auth>
+
+    <div id="signup" class="form-registration">
+      <div class="form">
+        <iron-form name="player-registration">
+          <form method="get" action="">
+            <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
+            <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
+          </form>
+        </iron-form>
+      </div>
+      <div>
+        <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
+        <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
+      </div>
+    </div>
+
+    <paper-dialog id="error" class="dialog error" modal>
+      <h2>Error</h2>
+      <div>Error occured during signup</div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    class Signup extends Polymer.Element {
+      static get is() { return 'cm-signup'; }
+
+      static get properties() {
+        return {
+          user: Object,
+          email: String,
+          password: String
+        }
+      }
+
+      _registerUser() {
+        this.$.auth.createUserWithEmailAndPassword(this.email,this.password)
+          .then(function(user){
+            console.log(user);
+            firebase.database().ref('/users/').child(user.uid).set({
+
+            });
+          })
+          .catch(function(error) {
+            alert(error.message);
+          });
+      }
+      
+      ready() {
+        super.ready();
+        this.$.signup.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+        });
+      }
+    }
+
+    window.customElements.define(Signup.is, Signup);
+  </script>
+</dom-module>
