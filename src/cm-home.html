@@ -85,6 +85,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
+    <firebase-query 
+        id="userQuery"
+        log=true
+        path="/users/[[user.uid]]/settings"
+        data="{{userData}}"></firebase-query>
+
+    <firebase-query 
+        id="tournamentQuery"
+        log=true
+        path="/tournaments"
+        data="{{tournamentData}}"></firebase-query>
+
     <app-route
         route="[[route]]"
         pattern="/:page"
@@ -121,8 +133,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <cm-tournaments name="tournaments"></cm-tournaments>
-          <cm-settings name="settings"></cm-settings>
+          <cm-tournaments name="tournaments" tournaments="[[tournamentData]]"></cm-tournaments>
+          <cm-settings name="settings" settings="[[userData]]"></cm-settings>
           <cm-view404 name="view404"></cm-view404>
         </iron-pages>
       </app-header-layout>
@@ -145,7 +157,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           route: Object,
           routeData: Object,
           subroute: Object,
-          user: Object
+          user: Object,
+          userData: Object,
+          tournamentData: Object
         };
       }
 

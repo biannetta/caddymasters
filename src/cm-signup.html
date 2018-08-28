@@ -14,7 +14,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="cm-signup">
@@ -49,25 +48,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
-    <div id="signup" class="form-registration">
-      <div class="form">
-        <iron-form name="player-registration">
-          <form method="get" action="">
-            <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
-            <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
-          </form>
-        </iron-form>
+     <div id="signup" class="form-registration">
+        <div class="form">
+          <iron-form name="player-registration">
+            <form method="get" action="">
+              <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
+              <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
+              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
+              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
+              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
+              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
+            </form>
+          </iron-form>
+        </div>
+        <div>
+          <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
+          <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
+        </div>
       </div>
-      <div>
-        <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
-        <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
-      </div>
-    </div>
-
-    <paper-dialog id="error" class="dialog error" modal>
-      <h2>Error</h2>
-      <div>Error occured during signup</div>
-    </paper-dialog>
+    </app-header-layout>
   </template>
 
   <script>
@@ -78,18 +77,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {
           user: Object,
           email: String,
-          password: String
+          password: String,
+          firstname: String,
+          lastname: String,
+          cell: Number,
+          address: String
         }
       }
 
       _registerUser() {
         this.$.auth.createUserWithEmailAndPassword(this.email,this.password)
           .then(function(user){
-            console.log(user);
             firebase.database().ref('/users/').child(user.uid).set({
-
+              settings: {
+                firstname: this.firstname,
+                lastname: this.lastname,
+                cell: this.cell,
+                address: this.address
+              }
             });
-          })
+          }.bind(this))
           .catch(function(error) {
             alert(error.message);
           });

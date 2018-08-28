@@ -11,6 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="cm-settings">
@@ -23,13 +25,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <firebase-auth id="auth" user="{{user}}"></firebase-auth>
+
     <div class="form">
       <iron-form>
         <form method="get" action="">
-          <paper-input always-float-label label="First Name" type="text" name="firstname" value="Rory"></paper-input>
-          <paper-input always-float-label label="Last Name" type="text" name="lastname" value="McIlroy"></paper-input>
-          <paper-input always-float-label label="Email" type="email" name="email" value="rmcilroy@pga.com"></paper-input>
-          <paper-input always-float-label label="Cell Phone" type="number" name="cell" value="5195555555"></paper-input>
+          <paper-input always-float-label label="First Name" type="text" name="firstname" value="{{settings.2.$val}}"></paper-input>
+          <paper-input always-float-label label="Last Name" type="text" name="lastname" value="{{settings.3.$val}}"></paper-input>
+          <paper-input always-float-label label="Email" type="email" name="email" value="{{user.email}}"></paper-input>
+          <paper-input always-float-label label="Cell Phone" type="number" name="cell" value="{{settings.1.$val}}"></paper-input>
         </form>
       </iron-form>
     </div>
@@ -38,6 +42,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class Settings extends Polymer.Element {
       static get is() { return 'cm-settings'; }
+
+      static get properties() {
+        return{
+          user: Object,
+          settings: Object
+        }
+      }
+
+      ready() {
+        super.ready();
+      }
     }
 
     window.customElements.define(Settings.is, Settings);
