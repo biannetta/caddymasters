@@ -19,12 +19,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="cm-signup">
   <template>
     <style include="shared-styles">
+      h2 {
+        color: whitesmoke;
+        font-family: 'Playfair Display', serif;
+        font-weight: bold;
+        text-transform: capitalize;
+      }
       .form-registration {
         background-color: var(--app-primary-color);
         display: flex;
         flex-direction: column;
         height: 100vh;
         justify-content: space-between;
+      }
+      .form-selector {
+        background-color: var(--app-offset-color);
+        margin: 0 20px;
+        padding: 20px;
       }
       paper-button {
         margin: 0px;
@@ -48,25 +59,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-auth id="auth" user="{{user}}"></firebase-auth>
 
-     <div id="signup" class="form-registration">
-        <div class="form">
-          <iron-form name="player-registration">
-            <form method="get" action="">
-              <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
-              <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
-              <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
-              <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
-              <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
-              <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
-            </form>
-          </iron-form>
-        </div>
-        <div>
-          <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
-          <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
-        </div>
+    <div id="selector" class="form-registration">
+      <div class="form-selector">
+        <h2>Select a Registration</h2>
+        <paper-button class="action-bar" data-form-name='caddy' on-tap="showForm">Caddy</paper-button>
+        <paper-button class="action-bar" data-form-name='player' on-tap="showForm">Player</paper-button>
       </div>
-    </app-header-layout>
+    </div>
+
+    <div id="signup" class="form-registration" hidden>
+      <div id="caddy" class="form-caddy" hidden>
+        <iron-form name="registration">
+          <form method="get" action="">
+            <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
+            <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
+            <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
+            <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
+            <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
+            <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
+          </form>
+        </iron-form>
+      </div>
+      <div id="player" class="form-player" hidden>
+        <iron-form name="registration">
+          <form method="get" action="">
+            <paper-input label="Email" type="emai" name="email" value="{{email}}"></paper-input>
+            <paper-input label="Password" type="password" name="password" value="{{password}}"></paper-input>
+            <paper-input label="First Name" type="text" name="firstname" value="{{firstname}}"></paper-input>
+            <paper-input label="Last Name" type="text" name="lastname" value="{{lastname}}"></paper-input>
+            <paper-input label="Cell Phone" type="number" name="cell" value="{{cell}}"></paper-input>
+            <paper-input label="Address" type="text" name="address" value="{{address}}"></paper-input>
+          </form>
+        </iron-form>
+      </div>
+      <div>
+        <paper-button on-tap="_registerUser" class="action-bar">Register</paper-button>
+        <a href='/login'><paper-button class="action-bar offset">Cancel</paper-button></a>
+      </div>
+    </div>
   </template>
 
   <script>
@@ -102,8 +132,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
       }
       
+      showForm(e) {
+        this.$.selector.hidden = true;
+        this.$.signup.hidden = false;
+        
+        if (e.target.dataset.formName == 'caddy') {
+          this.$.caddy.hidden = false;
+          this.$.caddy.hidden = true;
+        } else {
+          this.$.caddy.hidden = true;
+          this.$.caddy.hidden = false;
+        }
+      }
+
       ready() {
         super.ready();
+        
+        this.$.selector.hidden = false;
+        this.$.signup.hidden = true;
+
         this.$.signup.addEventListener('touchmove', function(e) {
           e.preventDefault();
         });
