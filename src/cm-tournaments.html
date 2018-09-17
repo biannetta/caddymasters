@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="cm-tournaments">
@@ -19,14 +20,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
+      .header {
+        display: flex;
+        justify-content: space-between;
+      }
+      .details {
+        display: flex;
+        flex-direction: column;
+      }
+      .subtitle {
+        font-size: 14px;
+        font-style: italic;
+      }
+      .action {
+        align-items: center;
+        background-color: chartreuse;
+        color: whitesmoke;
+        display: flex;
+        font-size: 20px;
+        height: 50px;
+        justify-content: center;
+      }
+      .closed {
+        background-color: crimson;
+      }
     </style>
 
     <template is="dom-repeat" items="{{tournaments}}" as="tournament">
       <div class="card">
-        <div class="circle">1</div>
-        <h1>{{tournament.name}}</h1>
-        <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-        <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+        <div class="header">
+          <div class="circle">[[tournament.status]]</div>
+          <h1>[[tournament.name]]</h1>
+        </div>
+        <div class="details">
+          <p>
+            [[tournament.venue]]<br />
+            <span class="subtitle">[[tournament.location]]</span>
+          </p>
+        </div>
+        <paper-button class$="[[__getStatusClass(tournament.status)]]">[[__getAction(tournament.status)]]</paper-button>
       </div>
     </template>
   </template>
@@ -38,6 +70,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get properties() {
         return {
           tournaments: Object
+        }
+      }
+      __getStatusClass(status) {
+        if (status == 'O') {
+          return 'action open';
+        } else {
+          return 'action closed';
+        }
+      }
+
+      __getAction(status) {
+        if (status == 'O') {
+          return 'Register for Tournament';
+        } else {
+          return 'Tournament Registration Closed';
         }
       }
     }
